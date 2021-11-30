@@ -8,8 +8,9 @@ import {
 
 import './index.css';
 
+import Loader from './atoms/Loader'
+
 const App = React.lazy(() => import('./pages/App'))
-const Loader = React.lazy(() => import('./atoms/Loader'))
 
 ReactDOM.render(
   <Suspense fallback={<Loader />}>
