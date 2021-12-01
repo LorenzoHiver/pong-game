@@ -7,7 +7,7 @@ let scoreLeft = 0
 let scoreRight = 0
 let paddleWidth = 16
 let paddleHeight = 150
-let paddleStep = windowHeight / 15
+let paddleStep = windowHeight / 100
 let borderOffset = 20
 let diameter = 20
 
@@ -34,18 +34,50 @@ const Pong = ({ score, changeScore }) => {
         p5.createCanvas(windowWidth, windowHeight, "p2d").parent(canvasParentRef)
     }
 
-    useEffect(() => {
-        window.addEventListener("keydown", keyPressed);
-    }, []);
-
     //p5 Canvas Re-draw method
     const draw = (p5) => {
+        p5.keyIsDown()
         p5.background(55, 65, 81)
 
         // global pause - when not started or serve in progress
         if (started) {
             xBall += xBallSpeed
             yBall += yBallSpeed
+        }
+
+        if (p5.keyIsDown(65)) {
+            yPaddleLeft -= paddleStep
+            moveBallDuringLeftServe(leftServe)
+            moveBallDuringRightServe(rightServe)
+
+            boundToWindow()
+        }
+
+        if (p5.keyIsDown(81)) {
+            yPaddleLeft += paddleStep
+
+            moveBallDuringLeftServe(leftServe)
+            moveBallDuringRightServe(rightServe)
+
+            boundToWindow()
+        }
+
+        if (p5.keyIsDown(40)) {
+            yPaddleRight += paddleStep
+
+            moveBallDuringLeftServe(leftServe)
+            moveBallDuringRightServe(rightServe)
+
+            boundToWindow()
+        }
+
+        if (p5.keyIsDown(38)) {
+            yPaddleRight -= paddleStep
+
+            moveBallDuringLeftServe(leftServe)
+            moveBallDuringRightServe(rightServe)
+
+            boundToWindow()
         }
 
         // Detect collision with left paddle
@@ -171,45 +203,32 @@ const Pong = ({ score, changeScore }) => {
     const drawStaticItems = (p5) => {
         // Draw middle line
         p5.fill(255, 255, 255)
-        p5.noStroke()
         p5.rect((windowWidth - paddleWidth) / 2, 0, paddleWidth / 2, windowHeight)
 
     }
 
-    //p5 event on key press
     const keyPressed = (e) => {
-        switch (e.keyCode) {
-            case (32):
-                started = true
-                xBallSpeed = Math.abs(xBallSpeed)
-                leftServe = false
-                break
-            case (38):
-                yPaddleRight -= paddleStep
-                break
-            case (40):
-                yPaddleRight += paddleStep
-                break
-            case (65):
-                yPaddleLeft -= paddleStep
-                break
-            case (81):
-                yPaddleLeft += paddleStep
-                break
-            default:
-                break
+        //space bar to launch game
+        if (e.keyCode === 32) {
+            started = true
+            if (leftServe) {
+                xBallSpeed = Math.abs(xBallSpeed);
+            }
+            if (rightServe) {
+                xBallSpeed = Math.abs(xBallSpeed) * -1;
+            }
+            leftServe = false;
+            rightServe = false;
         }
 
         moveBallDuringLeftServe(leftServe)
         moveBallDuringRightServe(rightServe)
 
-
         boundToWindow()
     }
 
     return (
-        <Sketch setup={setup} draw={draw} keyPressed={keyPressed} style={{ border: '3px solid white' }} />
-
+        <Sketch setup={setup} keyPressed={keyPressed} draw={draw} style={{ border: '5px solid white' }} />
     )
 }
 
