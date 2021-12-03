@@ -11,6 +11,8 @@ import './index.css';
 
 import Loader from './atoms/Loader'
 
+require('dotenv').config()
+
 const PongGame = React.lazy(() => pMinDelay(import('./pages/PongGame'), 1500) )
 const Home = React.lazy(() => pMinDelay(import('./pages/Home'), 1500) )
 
