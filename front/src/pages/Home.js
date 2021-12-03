@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useForm, Controller, FormProvider } from "react-hook-form";
+import axios from 'axios';
+import { useForm, Controller } from "react-hook-form";
 
 
 const Home = () => {
     const navigate = useNavigate()
+    const [matchs, setMatchs] = useState([])
     const { control, formState: { errors }, handleSubmit } = useForm({
         defaultValues: {
             firstPseudo: '',
@@ -12,10 +14,18 @@ const Home = () => {
         }
     });
 
-    const onSubmit = async (data) => {
-        await console.log(data)
+    const onSubmit = async ({firstPseudo, secondPseudo}) => {
+        await axios.post(`${process.env.REACT_APP_API_URL}matchs`, { firstPseudo, secondPseudo })
         navigate('/pong')
     };
+
+    useEffect(() => {
+        axios.get(`${process.env.REACT_APP_API_URL}matchs`)
+        .then(res => {
+          const matchs = res.data;
+          setMatchs(matchs)
+        })
+    }, [])
 
     return (
         <div className="h-screen w-screen bg-gradient-to-r from-green-400 to-blue-500  flex justify-between">
@@ -25,12 +35,21 @@ const Home = () => {
                     <div className="flex justify-around w-full mt-5">
                         <div className="flex flex-col">
                             <h3 className="text-white">Joueur 1</h3>
+                            {matchs && matchs.map((match) => (
+                                <h3 className="text-white">{match.firstPseudo}</h3>
+                            ))}
                         </div>
                         <div className="flex flex-col">
                             <h3 className="font-bold text-white">Score</h3>
+                            {matchs && matchs.map((match) => (
+                                <h3 className="text-white">{match.score ? match.score : 'En cours ..'}</h3>
+                            ))}
                         </div>
                         <div className="flex flex-col">
                             <h3 className="text-white">Joueur 2</h3>
+                            {matchs && matchs.map((match) => (
+                                <h3 className="text-white">{match.secondPseudo}</h3>
+                            ))}
                         </div>
                     </div>
 
