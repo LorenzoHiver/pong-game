@@ -1,4 +1,4 @@
-const Matchs = require('../models').Matchs;
+const Matchs = require('../models').Matchs
 
 module.exports = {
     create: async (req, res) => {
@@ -34,4 +34,4 @@ module.exports = {
             res.send(400, e)
         }
     },
-};
+}

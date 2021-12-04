@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Matchs extends Model {};
+  class Matchs extends Model {}
   Matchs.init({
     firstPseudo: DataTypes.STRING,
     secondPseudo: DataTypes.STRING,
@@ -12,5 +12,5 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Matchs',
   });
-  return Matchs;
-};
+  return Matchs
+}
