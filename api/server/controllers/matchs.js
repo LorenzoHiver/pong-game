@@ -26,10 +26,8 @@ module.exports = {
     updateScore: async (req, res) => {
         try {
             const { score, id } = req.body
-            console.log('test')
             if(!score || !id) throw 'undefined_params'
             const match = await Matchs.findByPk(id)
-            console.log(match)
             await match.update({ score: score })
             res.send(200, match)
         } catch (e) {
