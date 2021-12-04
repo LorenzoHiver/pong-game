@@ -50,7 +50,7 @@ const Pong = () => {
         dispatch({ type: 'UPDATE_SCORE', payload: { score: leftScore + '-' + rightScore, firstPseudo: state.firstPseudo, secondPseudo: state.secondPseudo, id: state.id } })
         axios.put(`${process.env.REACT_APP_API_URL}matchs`, { score: leftScore + '-' + rightScore, id: state.id })
             .then(() => {
-                if (leftScore >= 3 || rightScore >= 3) {
+                if (leftScore >= 5 || rightScore >= 5) {
                     navigate('/')
                 }
             })
@@ -209,7 +209,7 @@ const Pong = () => {
             yBall = yPaddleRight + (0.5 * paddleHeight)
         }
     }
-
+    
     const moveBallDuringLeftServe = (moveBallDuringLeftServe) => {
         if (moveBallDuringLeftServe) {
             xBall = xPaddleLeft + paddleWidth + diameter / 2
@@ -225,21 +225,22 @@ const Pong = () => {
     }
 
     const drawStaticItems = (p5) => {
-        // Draw middle line
+        // Draw middle line of board
         p5.fill(125, 95, 255)
         p5.rect((windowWidth - paddleWidth) / 2, 0, paddleWidth / 2, windowHeight)
-
     }
 
     const keyPressed = (e) => {
-        //space bar to launch game
+        //press space bar to launch game
         if (e.keyCode === 32) {
             started = true
             if (leftServe) {
-                xBallSpeed = Math.abs(xBallSpeed);
+                xBallSpeed = 7;
+                yBallSpeed = 7
             }
             if (rightServe) {
-                xBallSpeed = Math.abs(xBallSpeed) * -1;
+                xBallSpeed = 7 * -1;
+                yBallSpeed = 7 * -1;
             }
             leftServe = false;
             rightServe = false;
