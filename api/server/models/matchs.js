@@ -11,6 +11,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Matchs',
-  });
+  })
   return Matchs
 }
