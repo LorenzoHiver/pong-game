@@ -54,9 +54,9 @@ const Home = () => {
         <div className="h-screen w-screen flex bg-white justify-between overflow-hidden">
 
             <div className='flex h-screen w-1/3 justify-center items-center flex-col' style={{ background: '#7d5fff' }}>
-                <div className='h-5/6 w-9/12 rounded-2xl p-4 flex-col flex items-center overflow-y-auto mt-8'>
+                <div className='h-5/6 w-10/12 rounded-2xl flex-col flex items-center overflow-y-auto mt-8'>
                     <h2 className="font-bold text-gray-50 text-2xl max-h-screen text-center mb-8">Derniers matchs ! <span className='font-normal'>🕹️</span></h2>
-                    {filtredMatchsList && filtredMatchsList.filter((match) => match.score).sort((a, b) => moment(b.updatedAt) - moment(a.updatedAt)).slice(0, 9).map(({ firstPseudo, score, id, secondPseudo }, i) => (
+                    {filtredMatchsList && filtredMatchsList.filter((match) => match.score).sort((a, b) => moment(b.updatedAt) - moment(a.updatedAt)).slice(0, 8).map(({ firstPseudo, score, id, secondPseudo }, i) => (
                         <Item delay={i * 0.2} key={id} firstPseudo={firstPseudo} score={score} secondPseudo={secondPseudo} getScorePlayer={getScorePlayer} />
                     ))}
                 </div>
