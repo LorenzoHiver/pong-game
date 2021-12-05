@@ -1,8 +1,10 @@
 import React from 'react'
+import './items.css'
 
-const Item = ({ firstPseudo, secondPseudo, getScorePlayer, score }) => {
+const Item = ({ firstPseudo, secondPseudo, getScorePlayer, score, delay }) => {
+
     return (
-        <div className="flex justify-between items-center w-full mt-5 bg-gray-50 py-3 px-6 rounded">
+        <div className="flex justify-between items-center w-full mt-5 bg-gray-50 py-3 px-6 rounded" style={{ animation: `opacity .35s ease-in`, animationDelay: `${delay}s`, animationFillMode: 'both' }}>
             <div className="flex w-1/3 text-left">
                 <p>{getScorePlayer(score, 0) > getScorePlayer(score, 1) ? '🏆' : '🤡'}</p>
                 <h3 className="font-bold capitalize ml-3 uppercase">{firstPseudo}</h3>

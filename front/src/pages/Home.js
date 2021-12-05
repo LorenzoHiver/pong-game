@@ -15,6 +15,7 @@ const Home = () => {
     const { state, dispatch } = useContext(store);
     const navigate = useNavigate()
     const [matchs, setMatchs] = useState([])
+    const [filtredMatchsList, setFiltredMatchsList] = useState()
     const { control, formState: { errors }, handleSubmit } = useForm({
         defaultValues: {
             firstPseudo: '',
@@ -30,23 +31,37 @@ const Home = () => {
         navigate('/pong')
     };
 
+    const filtredMatchs = (matchs, type, value) => {
+        switch (type) {
+            case 'name':
+                const filtredMatchsByName = matchs.filter((match) => match.firstPseudo.toUpperCase().includes(value.toUpperCase()) || match.secondPseudo.toUpperCase().includes(value.toUpperCase()))
+                return filtredMatchsByName
+            default:
+                return matchs
+        }
+    }
+
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_URL}matchs`)
             .then(res => {
                 const { data: matchs } = res;
                 setMatchs(matchs)
+                setFiltredMatchsList(matchs)
             })
     }, [])
 
     return (
         <div className="h-screen w-screen flex bg-white justify-between overflow-hidden">
 
-            <div className='flex h-screen w-1/3 justify-center items-center ' style={{ background: '#7d5fff' }}>
-                <div className='h-5/6 w-9/12 rounded-2xl p-4 flex-col flex items-center overflow-y-auto '>
-                    <h2 className="font-bold text-gray-50 text-2xl max-h-screen text-center mb-2">Derniers matchs ! <span className='font-normal'>🕹️</span></h2>
-                    {matchs && matchs.filter((match) => match.score).sort((a, b) => moment(b.updatedAt) - moment(a.updatedAt)).slice(0, 9).map(({ firstPseudo, score, id, secondPseudo }) => (
-                        <Item key={id} firstPseudo={firstPseudo} score={score} secondPseudo={secondPseudo} getScorePlayer={getScorePlayer} />
+            <div className='flex h-screen w-1/3 justify-center items-center flex-col' style={{ background: '#7d5fff' }}>
+                <div className='h-5/6 w-9/12 rounded-2xl p-4 flex-col flex items-center overflow-y-auto mt-8'>
+                    <h2 className="font-bold text-gray-50 text-2xl max-h-screen text-center mb-8">Derniers matchs ! <span className='font-normal'>🕹️</span></h2>
+                    {filtredMatchsList && filtredMatchsList.filter((match) => match.score).sort((a, b) => moment(b.updatedAt) - moment(a.updatedAt)).slice(0, 9).map(({ firstPseudo, score, id, secondPseudo }, i) => (
+                        <Item delay={i * 0.2} key={id} firstPseudo={firstPseudo} score={score} secondPseudo={secondPseudo} getScorePlayer={getScorePlayer} />
                     ))}
+                </div>
+                <div className='flex mt-auto mb-12'>
+                    <Input placeholder='Rechercher un pseudo ?' onChange={((e) => setFiltredMatchsList(filtredMatchs(matchs, 'name', e.target.value)))} />
                 </div>
             </div>
 
@@ -77,7 +92,7 @@ const Home = () => {
                         />
                     </form>
                     {(errors['firstPseudo'] || errors['secondPseudo']) && (
-                        <Error text="Veuillez saisir les pseudos des joueurs pour jouer !" emoji="🚀" />
+                        <Error text="Veuillez saisir les pseudos des joueurs pour lancer la partie !" emoji="🚀" />
                     )}
                 </div>
 

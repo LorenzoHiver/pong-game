@@ -8,13 +8,12 @@ import { useNavigate } from 'react-router-dom'
 import hit from '../assets/songs/hit.mp3'
 import bad from '../assets/songs/bad.mp3'
 
-
 let windowWidth = window.innerWidth / 1.3
 let windowHeight = window.innerHeight / 1.3
 let paddleWidth = 16
 let paddleHeight = 150
-let paddleStep = windowHeight / 120
-let borderOffset = 20
+let paddleStep = windowHeight / 70
+let borderOffset = 15
 let diameter = 20
 
 let xPaddleLeft = borderOffset
@@ -47,12 +46,12 @@ const Pong = () => {
     }
 
     useEffect(() => {
-        dispatch({ type: 'UPDATE_SCORE', payload: { score: leftScore + '-' + rightScore, firstPseudo: state.firstPseudo, secondPseudo: state.secondPseudo, id: state.id } })
         axios.put(`${process.env.REACT_APP_API_URL}matchs`, { score: leftScore + '-' + rightScore, id: state.id })
-            .then(() => {
-                if (leftScore >= 5 || rightScore >= 5) {
-                    navigate('/')
+            .then(async () => {
+                if (leftScore >= 1 || rightScore >= 1) {
+                    return dispatch({ type: 'UPDATE_SCORE', payload: { score: leftScore + '-' + rightScore, firstPseudo: state.firstPseudo, secondPseudo: state.secondPseudo, id: state.id, winner: leftScore >= 5 ? state.firstPseudo : state.secondPseudo } })
                 }
+                dispatch({ type: 'UPDATE_SCORE', payload: { score: leftScore + '-' + rightScore, firstPseudo: state.firstPseudo, secondPseudo: state.secondPseudo, id: state.id, winner: '' } })
             })
 
     }, [dispatch, leftScore, rightScore])
@@ -115,7 +114,7 @@ const Pong = () => {
                 yBall < (yPaddleLeft + (0.5 * paddleHeight))
             ) {
                 yBallSpeed = Math.abs(yBallSpeed) * 1.07
-                xBallSpeed = Math.abs(xBallSpeed) * 1.07 
+                xBallSpeed = Math.abs(xBallSpeed) * 1.07
                 hitPlaySong()
             }
             if (
@@ -209,7 +208,7 @@ const Pong = () => {
             yBall = yPaddleRight + (0.5 * paddleHeight)
         }
     }
-    
+
     const moveBallDuringLeftServe = (moveBallDuringLeftServe) => {
         if (moveBallDuringLeftServe) {
             xBall = xPaddleLeft + paddleWidth + diameter / 2

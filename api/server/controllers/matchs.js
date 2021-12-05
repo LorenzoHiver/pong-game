@@ -7,9 +7,7 @@ module.exports = {
             if (!firstPseudo || !secondPseudo) throw 'undefined_params'
             const match = await Matchs.create({ firstPseudo: firstPseudo, secondPseudo: secondPseudo })
             console.log('New match created for', firstPseudo, 'and', secondPseudo)
-            res.send(200, {
-                id: match.id
-            })
+            res.send(200, { id: match.id })
         } catch (e) {
             console.error('Error in match creation for:',firstPseudo, secondPseudo, e)
             res.send(400, e)
