@@ -1,13 +1,22 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Pong from '../organisms/Pong'
 import Win from '../organisms/Win'
 import { store } from '../store'
+import { useNavigate } from 'react-router'
 
 function App() {
   const { state, dispatch } = useContext(store);
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(!state.score) {
+      navigate('/')
+    }
+  }, [state.score])
+
   return (
     <>
-      {state && (
+      {state.score && (
         <div className="flex-col flex bg-gray-50 justify-center items-center h-screen w-screen">
           {state.winner && (
             <Win winner={state.winner} />

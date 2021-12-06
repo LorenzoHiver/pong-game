@@ -1,5 +1,4 @@
 import React from 'react'
-import './items.css'
 
 const Item = ({ firstPseudo, secondPseudo, getScorePlayer, score, delay }) => {
 

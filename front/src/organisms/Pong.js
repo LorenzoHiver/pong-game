@@ -3,7 +3,6 @@ import Sketch from "react-p5"
 import { store } from '../store'
 import axios from 'axios'
 import useSound from 'use-sound';
-import { useNavigate } from 'react-router-dom'
 
 import hit from '../assets/songs/hit.mp3'
 import bad from '../assets/songs/bad.mp3'
@@ -38,7 +37,6 @@ const Pong = () => {
     const [rightScore, setRightScore] = useState(0)
     const [hitPlaySong] = useSound(hit);
     const [badPlaySong] = useSound(bad);
-    const navigate = useNavigate()
 
     //p5 Canvas Setup
     const setup = (p5, canvasParentRef) => {
@@ -48,8 +46,8 @@ const Pong = () => {
     useEffect(() => {
         axios.put(`${process.env.REACT_APP_API_URL}matchs`, { score: leftScore + '-' + rightScore, id: state.id })
             .then(async () => {
-                if (leftScore >= 1 || rightScore >= 1) {
-                    return dispatch({ type: 'UPDATE_SCORE', payload: { score: leftScore + '-' + rightScore, firstPseudo: state.firstPseudo, secondPseudo: state.secondPseudo, id: state.id, winner: leftScore >= 5 ? state.firstPseudo : state.secondPseudo } })
+                if (leftScore >= 3 || rightScore >= 3) {
+                    return dispatch({ type: 'UPDATE_SCORE', payload: { score: leftScore + '-' + rightScore, firstPseudo: state.firstPseudo, secondPseudo: state.secondPseudo, id: state.id, winner: leftScore >= 3 ? state.firstPseudo : state.secondPseudo } })
                 }
                 dispatch({ type: 'UPDATE_SCORE', payload: { score: leftScore + '-' + rightScore, firstPseudo: state.firstPseudo, secondPseudo: state.secondPseudo, id: state.id, winner: '' } })
             })
@@ -58,7 +56,6 @@ const Pong = () => {
 
     //p5 Canvas Re-draw method
     const draw = (p5) => {
-        p5.keyIsDown()
         p5.background(249, 250, 251)
 
         // global pause - when not started or serve in progress
@@ -69,8 +66,8 @@ const Pong = () => {
 
         if (p5.keyIsDown(65)) {
             yPaddleLeft -= paddleStep
-            moveBallDuringLeftServe(leftServe)
-            moveBallDuringRightServe(rightServe)
+            moveBallWhenLeftServe(leftServe)
+            moveBallWhenRightServe(rightServe)
 
             boundToWindow()
         }
@@ -78,8 +75,8 @@ const Pong = () => {
         if (p5.keyIsDown(81)) {
             yPaddleLeft += paddleStep
 
-            moveBallDuringLeftServe(leftServe)
-            moveBallDuringRightServe(rightServe)
+            moveBallWhenLeftServe(leftServe)
+            moveBallWhenRightServe(rightServe)
 
             boundToWindow()
         }
@@ -87,8 +84,8 @@ const Pong = () => {
         if (p5.keyIsDown(40)) {
             yPaddleRight += paddleStep
 
-            moveBallDuringLeftServe(leftServe)
-            moveBallDuringRightServe(rightServe)
+            moveBallWhenLeftServe(leftServe)
+            moveBallWhenRightServe(rightServe)
 
             boundToWindow()
         }
@@ -96,8 +93,8 @@ const Pong = () => {
         if (p5.keyIsDown(38)) {
             yPaddleRight -= paddleStep
 
-            moveBallDuringLeftServe(leftServe)
-            moveBallDuringRightServe(rightServe)
+            moveBallWhenLeftServe(leftServe)
+            moveBallWhenRightServe(rightServe)
 
             boundToWindow()
         }
@@ -188,7 +185,7 @@ const Pong = () => {
         p5.noStroke()
         p5.rect(xPaddleRight, yPaddleRight, paddleWidth, paddleHeight)
 
-        drawStaticItems(p5)
+        drawMiddleBar(p5)
 
         // Draw ball (top layer)
         p5.fill(31, 41, 55)
@@ -197,23 +194,28 @@ const Pong = () => {
     }
 
     const bounceTopBottom = () => {
-        // bounce from top and bottom
         if (yBall < diameter / 2 || yBall > windowHeight - diameter) {
             yBallSpeed *= -1
+            return
         }
+        return
     }
-    const moveBallDuringRightServe = (moveBallDuringRightServe) => {
-        if (moveBallDuringRightServe) {
+    const moveBallWhenRightServe = (moveBallWhenRightServe) => {
+        if (moveBallWhenRightServe) {
             xBall = xPaddleRight - diameter / 2
             yBall = yPaddleRight + (0.5 * paddleHeight)
+            return
         }
+        return
     }
 
-    const moveBallDuringLeftServe = (moveBallDuringLeftServe) => {
-        if (moveBallDuringLeftServe) {
+    const moveBallWhenLeftServe = (moveBallWhenLeftServe) => {
+        if (moveBallWhenLeftServe) {
             xBall = xPaddleLeft + paddleWidth + diameter / 2
             yBall = yPaddleLeft + (0.5 * paddleHeight)
+            return
         }
+        return
     }
 
     const boundToWindow = () => {
@@ -223,13 +225,13 @@ const Pong = () => {
         if (yPaddleRight + paddleHeight >= windowHeight) yPaddleRight = windowHeight - paddleHeight
     }
 
-    const drawStaticItems = (p5) => {
-        // Draw middle line of board
+    const drawMiddleBar = (p5) => {
         p5.fill(125, 95, 255)
         p5.rect((windowWidth - paddleWidth) / 2, 0, paddleWidth / 2, windowHeight)
+        return
     }
 
-    const keyPressed = (e) => {
+    const handlePress = (e) => {
         //press space bar to launch game
         if (e.keyCode === 32) {
             started = true
@@ -245,14 +247,15 @@ const Pong = () => {
             rightServe = false;
         }
 
-        moveBallDuringLeftServe(leftServe)
-        moveBallDuringRightServe(rightServe)
+        moveBallWhenLeftServe(leftServe)
+        moveBallWhenRightServe(rightServe)
 
         boundToWindow()
+        return
     }
 
     return (
-        <Sketch setup={setup} keyPressed={keyPressed} draw={draw} style={{ border: '8px solid #7D5FFF', borderRadius: '10px' }} />
+        <Sketch setup={setup} keyPressed={handlePress} draw={draw} style={{ border: '8px solid #7D5FFF', borderRadius: '10px' }} />
     )
 }
 

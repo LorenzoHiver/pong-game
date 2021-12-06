@@ -100,7 +100,7 @@ const Home = () => {
                     <p className="mb-1 text-center text-gray-50">Le <span className="font-bold ">Joueur 1</span> doit utiliser les touches <span className="font-bold text-xl">A</span> et <span className="font-bold text-xl">Q</span></p>
                     <p className="text-gray-50 mb-1 text-center">Le <span className="font-bold">Joueur 2</span> doit utiliser les flèches 🔼 et 🔽</p>
                     <p className="mb-1 text-gray-50 text-center">La touche <span className="font-bold">ESPACE</span> permet de lancer la balle</p>
-                    <p className="mb-1 text-gray-50 text-center">Le premier joueur à <span className="font-bold">5 points</span> gagne la partie</p>
+                    <p className="mb-1 text-gray-50 text-center">Le premier joueur à <span className="font-bold">3 points</span> gagne la partie</p>
                 </Box>
 
                 <p className="mb-6 font-bold mt-auto  text-white text-gray-800">Made with <span className='font-normal'>❤️</span> by Lorenzo.</p>
@@ -110,5 +110,3 @@ const Home = () => {
 }
 
 export default Home
-
-

@@ -1,6 +1,6 @@
-import React, { Suspense } from 'react';
-import pMinDelay from 'p-min-delay';
-import ReactDOM from 'react-dom';
+import React, { Suspense } from 'react'
+import pMinDelay from 'p-min-delay'
+import ReactDOM from 'react-dom'
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,7 +17,6 @@ require('dotenv').config()
 const PongGame = React.lazy(() => pMinDelay(import('./pages/PongGame'), 1500))
 const Home = React.lazy(() => pMinDelay(import('./pages/Home'), 1500))
 
-
 ReactDOM.render(
   <StateProvider>
     <Suspense fallback={<Loader />}>
@@ -31,4 +30,4 @@ ReactDOM.render(
   </StateProvider>
   ,
   document.getElementById('root')
-);
+)
