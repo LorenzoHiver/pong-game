@@ -7,41 +7,37 @@ import useSound from 'use-sound';
 import hit from '../assets/songs/hit.mp3'
 import bad from '../assets/songs/bad.mp3'
 
-let windowWidth = window.innerWidth / 1.3
-let windowHeight = window.innerHeight / 1.3
-let paddleWidth = 16
-let paddleHeight = 150
-let paddleStep = windowHeight / 70
-let borderOffset = 15
-let diameter = 20
-
-let xPaddleLeft = borderOffset
-let yPaddleLeft = windowHeight / 2
-let xPaddleRight = windowWidth - borderOffset - paddleWidth
-let yPaddleRight = windowHeight / 2
-let leftServeXpos = xPaddleLeft + paddleWidth + diameter / 2
-let leftServeYpos = yPaddleLeft + (0.5 * paddleHeight)
-let yBall = leftServeYpos
-let xBall = leftServeXpos
-let xBallSpeed = 7
-let yBallSpeed = 7
-
-let started = false
-let leftServe = true
-let rightServe = false
-
 
 const Pong = () => {
     const { state, dispatch } = useContext(store);
     const [leftScore, setLeftScore] = useState(0)
     const [rightScore, setRightScore] = useState(0)
-    const [hitPlaySong] = useSound(hit);
-    const [badPlaySong] = useSound(bad);
+    const [hitPlaySong] = useSound(hit)
+    const [badPlaySong] = useSound(bad)
 
-    //p5 Canvas Setup
-    const setup = (p5, canvasParentRef) => {
-        p5.createCanvas(windowWidth, windowHeight, "p2d").parent(canvasParentRef)
-    }
+    const windowWidth = window.innerWidth / 1.3 //canvas width
+    const windowHeight = window.innerHeight / 1.3 //canvas height
+
+    let paddleWidth = 16
+    let paddleHeight = 150
+    let paddleStep = windowHeight / 70 //paddle move speed
+    let borderOffset = 15 //padding X
+    let diameter = 20 //diamater of the ball
+
+    let xPaddleLeft = borderOffset
+    let yPaddleLeft = windowHeight / 2.3
+    let xPaddleRight = windowWidth - borderOffset - paddleWidth
+    let yPaddleRight = windowHeight / 2.3
+    let leftServeXpos = xPaddleLeft + paddleWidth + diameter / 2
+    let leftServeYpos = yPaddleLeft + (0.5 * paddleHeight)
+    let yBall = leftServeYpos
+    let xBall = leftServeXpos
+    let xBallSpeed = 7
+    let yBallSpeed = 7
+
+    let started = false
+    let leftServe = true
+    let rightServe = false
 
     useEffect(() => {
         axios.put(`${process.env.REACT_APP_API_URL}matchs`, { score: leftScore + '-' + rightScore, id: state.id })
@@ -54,15 +50,22 @@ const Pong = () => {
 
     }, [dispatch, leftScore, rightScore])
 
-    //p5 Canvas Re-draw method
+    //p5 create canvas
+    const setup = (p5, canvasParentRef) => {
+        p5.createCanvas(windowWidth, windowHeight, "p2d").parent(canvasParentRef)
+    }
+
+    //p5 draw method
     const draw = (p5) => {
         p5.background(249, 250, 251)
 
-        // global pause - when not started or serve in progress
+        // wait space touch to launch
         if (started) {
             xBall += xBallSpeed
             yBall += yBallSpeed
         }
+
+        //move bar when keyIsDown see https://keycode.info/ to know key code
 
         if (p5.keyIsDown(65)) {
             yPaddleLeft -= paddleStep
@@ -99,7 +102,7 @@ const Pong = () => {
             boundToWindow()
         }
 
-        // Detect collision with left paddle
+        // detect paddle left colision
         // if hit with upper half of paddle, redirect up, if lower half, redirect down
         if (
             xBall <= 0 + xPaddleLeft + paddleWidth + borderOffset + (diameter / 2) &&
@@ -136,7 +139,7 @@ const Pong = () => {
             leftServe = true
         }
 
-        // Detect collision with right paddle
+        // detect paddle right colision
         // if hit with upper half of paddle, redirect up, if lower half, redirect down
         if (
             xBall >= windowWidth - borderOffset - paddleWidth - (diameter / 2) &&
@@ -161,7 +164,6 @@ const Pong = () => {
             }
         }
         // points if behind right wall
-        // pause game and do serve position for the lost point user
         else if (xBall + diameter / 2 > windowWidth) {
             xBallSpeed *= -1
             setLeftScore(leftScore + 1)
